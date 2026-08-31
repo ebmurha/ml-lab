@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Environments
+.venv/
+venv/
+env/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Testing and coverage
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Project datasets
+projects/*/data/*
+!projects/*/data/README.md
+
+# Generated models and artifacts
+projects/*/artifacts/*
+!projects/*/artifacts/README.md
+*.joblib
+*.pkl
+*.onnx
+
+# Docker local state and overrides
+.docker/
+docker-compose.override.yml
+*.pid
+
+# Temporary files
+tmp/
+temp/
