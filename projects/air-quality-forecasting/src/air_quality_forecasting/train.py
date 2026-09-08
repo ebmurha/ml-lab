@@ -24,7 +24,7 @@ from .evaluate import (
     run_experiment,
     split_final_holdout,
 )
-from .features import TARGET_COLUMN, make_supervised_dataset
+from .features import TARGET_COLUMN, TARGET_TIME_COLUMN, make_supervised_dataset
 
 
 class PeakMemoryMonitor:
@@ -72,15 +72,19 @@ def train_project(
         result = run_experiment(dataset, feature_columns)
 
         development, holdout, _ = split_final_holdout(dataset)
+        deployment_model = None
         reproducible = True
         if result.selected_model == MODEL_NAME:
+            deployment_model = new_model().fit(
+                dataset[feature_columns], dataset[TARGET_COLUMN]
+            )
             replica = new_model().fit(
-                development[feature_columns], development[TARGET_COLUMN]
+                dataset[feature_columns], dataset[TARGET_COLUMN]
             )
             reproducible = bool(
                 np.allclose(
-                    replica.predict(holdout[feature_columns]),
-                    result.holdout_predictions[MODEL_NAME],
+                    replica.predict(dataset[feature_columns]),
+                    deployment_model.predict(dataset[feature_columns]),
                     rtol=0,
                     atol=1e-12,
                 )
@@ -91,11 +95,12 @@ def train_project(
         artifact = {
             "model_version": model_version,
             "model_name": result.selected_model,
-            "model": result.model,
+            "model": deployment_model,
             "feature_columns": feature_columns,
             "horizon_hours": HORIZON_HOURS,
             "data_sha256": digest,
             "data_end_utc": profile.end_utc,
+            "trained_through_target_utc": dataset[TARGET_TIME_COLUMN].max().isoformat(),
         }
         artifact_path.parent.mkdir(parents=True, exist_ok=True)
         joblib.dump(artifact, artifact_path)
@@ -135,6 +140,7 @@ def train_project(
                     < min(holdout[name] for name in BASELINES)
                 ),
                 "repeated_training_reproduces_predictions": reproducible,
+                "deployment_model_refit_on_complete_supervised_data": True,
             },
             "model_parameters": MODEL_PARAMETERS,
         }

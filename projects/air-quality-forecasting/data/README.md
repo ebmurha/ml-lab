@@ -20,4 +20,6 @@ Raw data files are ignored by Git.
 
 The source file contains 44,050 measurements across PM2.5, PM1, temperature, relative humidity and particle count. The modeling loader uses PM2.5, temperature and relative humidity.
 
+Data contributed by The Demography Project; data provided by [AirGradient](https://www.airgradient.com) via [OpenAQ](https://openaq.org). Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+
 See the [OpenAQ licence resource](https://docs.openaq.org/resources/licenses) for source licence metadata.

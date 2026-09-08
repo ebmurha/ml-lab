@@ -8,6 +8,8 @@ Forecast PM2.5 concentration six hours ahead for a configured location to suppor
 
 The working dataset contains hourly measurements retrieved from [OpenAQ](https://docs.openaq.org) for location `5199863`. Source, licence, attribution and coverage details are recorded in [`data/README.md`](data/README.md).
 
+Data contributed by The Demography Project; data provided by [AirGradient](https://www.airgradient.com) via [OpenAQ](https://openaq.org). Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+
 The target is PM2.5 concentration six hours after prediction time. Inputs are leakage-safe PM2.5, temperature and humidity lags and rolling statistics, plus the forecast hour and weekday.
 
 ## Setup
@@ -56,9 +58,11 @@ To run the same command in Docker:
 
 ```powershell
 docker build -t air-quality-forecasting .
+New-Item -ItemType Directory -Force logs | Out-Null
 docker run --rm `
   -v "${PWD}/data:/app/data:ro" `
   -v "${PWD}/artifacts:/app/artifacts:ro" `
+  -v "${PWD}/logs:/app/logs" `
   air-quality-forecasting `
   --data data/openaq_location_5199863_2025-07-25_2026-09-08.csv
 ```
@@ -69,9 +73,11 @@ The loader converts long-form sensor measurements into a regular hourly table wi
 
 Four expanding validation windows compare persistence, the seasonal baseline and `HistGradientBoostingRegressor`. A six-hour embargo prevents training targets from crossing into each later evaluation period. The latest 30 days form the final chronological holdout.
 
-The exact selection criterion is the lowest mean validation MAE across the four windows, with candidate name as a deterministic tie-breaker. Boosted trees suit this limited tabular dataset because they model nonlinear lag interactions, handle missing inputs and train efficiently on a CPU. An LSTM would add sequence construction, tuning and compute cost without enough data to justify that complexity.
+The exact selection criterion is the lowest mean validation MAE across the four windows, with candidate name as a deterministic tie-breaker. After final evaluation, the selected candidate is refit on the complete supervised dataset for deployment. Boosted trees suit this limited tabular dataset because they model nonlinear lag interactions, handle missing inputs and train efficiently on a CPU. An LSTM would add sequence construction, tuning and compute cost without enough data to justify that complexity.
 
 Production modules own retrieval, preparation, features, evaluation, training and inference. The [`forecasting-analysis.ipynb`](notebooks/forecasting-analysis.ipynb) notebook imports those modules to present the experiment visually.
+
+Machine-readable evidence is available in [`verification.json`](verification.json).
 
 ## Evaluation metrics
 
@@ -90,7 +96,7 @@ Mean absolute error (MAE), in µg/m³, is the primary metric.
 - Feature and split tests confirm that future observations and targets do not cross evaluation boundaries.
 - Peak measured training memory was 190.55 MB, below the 6 GB limit.
 - The batch command produced valid forecast JSON and logged freshness, missing-input rate, latency and model version.
-- All eight automated tests passed.
+- All nine automated tests passed, including the deployed boosted-tree inference path.
 
 These thresholds are exercise acceptance criteria and do not establish production suitability.
 
