@@ -26,6 +26,8 @@ uvicorn credit_default_risk.api:app --host 0.0.0.0 --port 8000
 
 Interactive API documentation is available at `http://127.0.0.1:8000/docs`.
 
+See the [experiment report](notebooks/exploratory-analysis.ipynb) for training-partition exploration, model selection, final test diagnostics, and aggregate subgroup results.
+
 ## Implementation approach
 
 - A fixed seed and stratification create 60% training, 20% validation, and 20% test partitions.
@@ -88,7 +90,7 @@ These thresholds are exercise acceptance criteria and do not establish productio
 - Test ROC-AUC: `0.7863` (required: at least `0.75`).
 - Test recall: `0.6368` (required: at least `0.60`).
 - `/predict` returns a calibrated probability, risk band, and model version.
-- Automated tests: `15 passed`, including ten API contract tests.
+- Automated tests: `17 passed`, including ten API contract tests.
 - Docker: image built and prediction endpoint responded successfully; five post-readiness requests averaged `60.56 ms`, with a maximum of `118.94 ms` (required: below `500 ms`).
 
 ## Limitations
