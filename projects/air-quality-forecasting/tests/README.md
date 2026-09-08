@@ -1,3 +1,3 @@
 # Tests
 
-Tests will cover feature timing, missing-data handling, reproducible training, evaluation, and batch inference as those components are implemented.
+Tests cover API pagination, feature timing, missing-data handling, chronological splits and batch inference. Training also verifies deterministic repeated predictions and records peak memory.
