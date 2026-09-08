@@ -1,0 +1,45 @@
+{
+  "model_version": "hist_gradient_boosting-data-f915b9f3-config-5e543d59-code-f6bf8f3d",
+  "fingerprints": {
+    "data_sha256": "f915b9f378b054517793e6798d7965eef8371cc4147d6ddebfb598c1881598d3",
+    "training_configuration_sha256": "5e543d5973119e0d4e0295147d152f78eed99730d24a89853616b4321a99de2f",
+    "source_code_sha256": "f6bf8f3d8c5b36f510b978f6844e94cca8f9db8e09f732dceb0a030172c6f526"
+  },
+  "selection_criterion": "Lowest mean MAE across four expanding validation windows; ties are resolved by candidate name.",
+  "selected_model": "hist_gradient_boosting",
+  "supervised_rows": 7883,
+  "deployment_refit_rows": 7883,
+  "validation": {
+    "hist_gradient_boosting_mean_mae": 8.3039597593,
+    "seasonal_naive_24h_mean_mae": 8.9168764858,
+    "persistence_mean_mae": 11.473297919,
+    "windows_beating_both_baselines": 3,
+    "windows_total": 4
+  },
+  "holdout": {
+    "start_utc": "2026-08-07T04:00:00+00:00",
+    "hist_gradient_boosting_mae": 9.7744215567,
+    "seasonal_naive_24h_mae": 10.0286597938,
+    "persistence_mae": 12.5771134021
+  },
+  "verification": {
+    "deployment_model_refit_on_complete_supervised_data": true,
+    "repeated_training_reproduces_predictions": true,
+    "peak_memory_mb": 191.03,
+    "peak_memory_below_6gb": true,
+    "tests_passed": 10,
+    "notebook_code_cells_executed": 9,
+    "notebook_error_outputs": 0,
+    "docker_batch_command_succeeded": true,
+    "docker_log_persisted_to_host": true
+  },
+  "sample_forecast": {
+    "prediction_time_utc": "2026-09-06T10:00:00+00:00",
+    "forecast_time_utc": "2026-09-06T16:00:00+00:00",
+    "horizon_hours": 6,
+    "predicted_pm25_ug_m3": 25.8681,
+    "model_name": "hist_gradient_boosting",
+    "model_version": "hist_gradient_boosting-data-f915b9f3-config-5e543d59-code-f6bf8f3d",
+    "missing_input_rate": 0.0857
+  }
+}
