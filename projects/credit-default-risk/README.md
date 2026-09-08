@@ -14,19 +14,63 @@ Place the supplied workbook at `data/default-of-credit-card-clients.xls`. Raw da
 
 ## Setup
 
-From this project directory on Windows PowerShell:
+Requirements: Python 3.11 or newer; Docker is optional.
+
+From `projects/credit-default-risk` in a clone or fork:
+
+```console
+python -m venv .venv
+```
+
+Activate the environment:
 
 ```powershell
-python -m venv .venv
+# Windows PowerShell
 .\.venv\Scripts\Activate.ps1
+```
+
+```bash
+# macOS or Linux
+source .venv/bin/activate
+```
+
+Then install the project and development tools:
+
+```console
 python -m pip install -e ".[dev]"
+```
+
+Download the linked UCI workbook and save it as `data/default-of-credit-card-clients.xls`.
+
+## Reproduce the results
+
+Train the models and generate the local artifact:
+
+```console
 python -m credit_default_risk.train
-uvicorn credit_default_risk.api:app --host 0.0.0.0 --port 8000
+```
+
+Execute and save the experiment report:
+
+```console
+python -m nbconvert --execute --inplace notebooks/exploratory-analysis.ipynb
+```
+
+Run the tests:
+
+```console
+python -m pytest -q
+```
+
+See the [experiment report](notebooks/exploratory-analysis.ipynb) for training-partition exploration, model selection, final test diagnostics, and aggregate subgroup results.
+
+## Run the API
+
+```console
+python -m uvicorn credit_default_risk.api:app --host 0.0.0.0 --port 8000
 ```
 
 Interactive API documentation is available at `http://127.0.0.1:8000/docs`.
-
-See the [experiment report](notebooks/exploratory-analysis.ipynb) for training-partition exploration, model selection, final test diagnostics, and aggregate subgroup results.
 
 ## Implementation approach
 
@@ -73,15 +117,16 @@ Lowering the threshold increases the share of defaults found, at the cost of mor
 
 Every successful prediction logs latency, model version, a request ID when supplied, the maximum standardized numeric deviation, the numeric outlier count, and unseen categorical values. These per-request signals are basic operational indicators; production drift decisions require aggregation over a representative window.
 
-## Tests and Docker
+## Docker
 
-```powershell
-pytest -q
+Run training first so `artifacts/model-0.1.0.joblib` exists, then:
+
+```console
 docker build -t credit-default-risk:local .
 docker run --rm -p 8000:8000 credit-default-risk:local
 ```
 
-Generate `artifacts/model-0.1.0.joblib` before building. The artifact and runtime versions are deliberately aligned because scikit-learn joblib files are version-sensitive.
+The artifact and runtime versions are deliberately aligned because scikit-learn joblib files are version-sensitive.
 
 ## Verification results
 
