@@ -15,7 +15,12 @@ import numpy as np
 import pandas as pd
 import psutil
 
-from .config import HORIZON_HOURS, HOLDOUT_DAYS, MODEL_PARAMETERS
+from .config import (
+    HORIZON_HOURS,
+    HOLDOUT_DAYS,
+    MODEL_PARAMETERS,
+    VALIDATION_WINDOWS,
+)
 from .data import load_hourly_measurements
 from .evaluate import (
     BASELINES,
@@ -25,6 +30,11 @@ from .evaluate import (
     split_final_holdout,
 )
 from .features import TARGET_COLUMN, TARGET_TIME_COLUMN, make_supervised_dataset
+
+SELECTION_CRITERION = (
+    "Lowest mean MAE across four expanding validation windows; "
+    "ties are resolved by candidate name."
+)
 
 
 class PeakMemoryMonitor:
@@ -55,6 +65,43 @@ def file_digest(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def configuration_digest(feature_columns: list[str]) -> str:
+    configuration = {
+        "feature_columns": feature_columns,
+        "holdout_days": HOLDOUT_DAYS,
+        "horizon_hours": HORIZON_HOURS,
+        "model_parameters": MODEL_PARAMETERS,
+        "selection_criterion": SELECTION_CRITERION,
+        "validation_windows": VALIDATION_WINDOWS,
+    }
+    encoded = json.dumps(
+        configuration, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def source_digest(package_directory: Path | None = None) -> str:
+    package_directory = package_directory or Path(__file__).resolve().parent
+    digest = hashlib.sha256()
+    for source_file in sorted(package_directory.glob("*.py")):
+        digest.update(source_file.name.encode("utf-8"))
+        normalized = source_file.read_text(encoding="utf-8").replace("\r\n", "\n")
+        digest.update(normalized.encode("utf-8"))
+    return digest.hexdigest()
+
+
+def build_model_version(
+    model_name: str, data_sha256: str, feature_columns: list[str]
+) -> tuple[str, str, str]:
+    config_sha256 = configuration_digest(feature_columns)
+    code_sha256 = source_digest()
+    version = (
+        f"{model_name}-data-{data_sha256[:8]}-"
+        f"config-{config_sha256[:8]}-code-{code_sha256[:8]}"
+    )
+    return version, config_sha256, code_sha256
 
 
 def frame_records(frame: pd.DataFrame) -> list[dict[str, Any]]:
@@ -91,7 +138,9 @@ def train_project(
             )
 
         digest = file_digest(data_path)
-        model_version = f"{result.selected_model}-{digest[:12]}"
+        model_version, config_digest, code_digest = build_model_version(
+            result.selected_model, digest, feature_columns
+        )
         artifact = {
             "model_version": model_version,
             "model_name": result.selected_model,
@@ -99,6 +148,8 @@ def train_project(
             "feature_columns": feature_columns,
             "horizon_hours": HORIZON_HOURS,
             "data_sha256": digest,
+            "training_configuration_sha256": config_digest,
+            "source_code_sha256": code_digest,
             "data_end_utc": profile.end_utc,
             "trained_through_target_utc": dataset[TARGET_TIME_COLUMN].max().isoformat(),
         }
@@ -117,10 +168,10 @@ def train_project(
         holdout = result.holdout_metrics.set_index("candidate")["mae"]
         metrics: dict[str, Any] = {
             "model_version": model_version,
-            "selection_criterion": (
-                "Lowest mean MAE across four expanding validation windows; "
-                "ties are resolved by candidate name."
-            ),
+            "selection_criterion": SELECTION_CRITERION,
+            "data_sha256": digest,
+            "training_configuration_sha256": config_digest,
+            "source_code_sha256": code_digest,
             "selected_model": result.selected_model,
             "data_profile": profile.to_dict(),
             "supervised_rows": len(dataset),

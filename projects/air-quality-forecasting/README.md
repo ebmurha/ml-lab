@@ -94,9 +94,9 @@ Mean absolute error (MAE), in µg/m³, is the primary metric.
 - The selected model beat both baselines in three of four validation windows and on the final holdout.
 - Repeated training with the fixed configuration reproduced predictions within `1e-12` absolute tolerance.
 - Feature and split tests confirm that future observations and targets do not cross evaluation boundaries.
-- Peak measured training memory was 190.55 MB, below the 6 GB limit.
+- Peak measured training memory was 191.03 MB, below the 6 GB limit.
 - The batch command produced valid forecast JSON and logged freshness, missing-input rate, latency and model version.
-- All nine automated tests passed, including the deployed boosted-tree inference path.
+- All ten automated tests passed, including deployed boosted-tree inference and model-version fingerprinting.
 
 These thresholds are exercise acceptance criteria and do not establish production suitability.
 

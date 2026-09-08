@@ -1,5 +1,10 @@
 {
-  "model_version": "hist_gradient_boosting-f915b9f378b0",
+  "model_version": "hist_gradient_boosting-data-f915b9f3-config-5e543d59-code-f6bf8f3d",
+  "fingerprints": {
+    "data_sha256": "f915b9f378b054517793e6798d7965eef8371cc4147d6ddebfb598c1881598d3",
+    "training_configuration_sha256": "5e543d5973119e0d4e0295147d152f78eed99730d24a89853616b4321a99de2f",
+    "source_code_sha256": "f6bf8f3d8c5b36f510b978f6844e94cca8f9db8e09f732dceb0a030172c6f526"
+  },
   "selection_criterion": "Lowest mean MAE across four expanding validation windows; ties are resolved by candidate name.",
   "selected_model": "hist_gradient_boosting",
   "supervised_rows": 7883,
@@ -20,9 +25,9 @@
   "verification": {
     "deployment_model_refit_on_complete_supervised_data": true,
     "repeated_training_reproduces_predictions": true,
-    "peak_memory_mb": 192.1,
+    "peak_memory_mb": 191.03,
     "peak_memory_below_6gb": true,
-    "tests_passed": 9,
+    "tests_passed": 10,
     "notebook_code_cells_executed": 9,
     "notebook_error_outputs": 0,
     "docker_batch_command_succeeded": true,
@@ -34,7 +39,7 @@
     "horizon_hours": 6,
     "predicted_pm25_ug_m3": 25.8681,
     "model_name": "hist_gradient_boosting",
-    "model_version": "hist_gradient_boosting-f915b9f378b0",
+    "model_version": "hist_gradient_boosting-data-f915b9f3-config-5e543d59-code-f6bf8f3d",
     "missing_input_rate": 0.0857
   }
 }
