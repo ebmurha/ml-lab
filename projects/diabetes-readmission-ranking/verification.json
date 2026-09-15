@@ -1,0 +1,286 @@
+{
+  "dataset": {
+    "raw_rows": 101766,
+    "eligible_rows": 99343,
+    "partition_rows": {
+      "train": 69678,
+      "calibration": 14862,
+      "test": 14803
+    },
+    "partition_patients": {
+      "train": 48992,
+      "calibration": 10499,
+      "test": 10499
+    },
+    "patient_overlap": {
+      "train_calibration": 0,
+      "train_test": 0,
+      "calibration_test": 0
+    }
+  },
+  "selection": {
+    "criterion": "highest mean patient-grouped 3-fold validation PR-AUC; model name ascending on ties",
+    "comparison": {
+      "dummy": {
+        "validation_pr_auc": 0.11329257441373174,
+        "fold_pr_auc": [
+          0.11258933953328167,
+          0.1163781968483596,
+          0.11091018685955395
+        ]
+      },
+      "logistic_regression": {
+        "validation_pr_auc": 0.2116408620880522,
+        "fold_pr_auc": [
+          0.21060555845475515,
+          0.21892320551644417,
+          0.20539382229295722
+        ]
+      },
+      "catboost": {
+        "validation_pr_auc": 0.23806607558126788,
+        "fold_pr_auc": [
+          0.23110228739231736,
+          0.24822149595551563,
+          0.23487444339597063
+        ]
+      }
+    },
+    "selected_model": "catboost",
+    "final_test_used_for_selection": false
+  },
+  "calibration": {
+    "partition": "calibration only",
+    "method": "isotonic",
+    "calibration_brier_by_method": {
+      "sigmoid": 0.0960991541995793,
+      "isotonic": 0.09567977133132223
+    },
+    "test_brier_before": 0.09666335786630635,
+    "test_brier_after": 0.09657125153563158
+  },
+  "test": {
+    "dummy": {
+      "pr_auc": 0.1161251097750456,
+      "brier_score": 0.10264809191135231,
+      "capacity_fraction": 0.1,
+      "selected_count": 1481,
+      "readmissions": 1719,
+      "readmissions_captured": 186,
+      "recall_at_capacity": 0.1082024432809773
+    },
+    "logistic_regression": {
+      "pr_auc": 0.21836374040764608,
+      "brier_score": 0.21977985073943693,
+      "capacity_fraction": 0.1,
+      "selected_count": 1481,
+      "readmissions": 1719,
+      "readmissions_captured": 390,
+      "recall_at_capacity": 0.2268760907504363
+    },
+    "catboost": {
+      "pr_auc": 0.2372234772342446,
+      "brier_score": 0.09657125153563158,
+      "capacity_fraction": 0.1,
+      "selected_count": 1481,
+      "readmissions": 1719,
+      "readmissions_captured": 445,
+      "recall_at_capacity": 0.2588714368819081
+    },
+    "random_prioritization": {
+      "capacity_fraction": 0.1,
+      "selected_count": 1481,
+      "readmissions": 1719,
+      "readmissions_captured": 194,
+      "recall_at_capacity": 0.1128563118091914
+    }
+  },
+  "subgroups": {
+    "race": [
+      {
+        "group": "AfricanAmerican",
+        "sample_count": 2792,
+        "positive_count": 325,
+        "recall": 0.23384615384615384,
+        "false_negative_rate": 0.7661538461538462
+      },
+      {
+        "group": "Asian",
+        "sample_count": 105,
+        "positive_count": 6,
+        "recall": 0.16666666666666666,
+        "false_negative_rate": 0.8333333333333334
+      },
+      {
+        "group": "Caucasian",
+        "sample_count": 11018,
+        "positive_count": 1316,
+        "recall": 0.26367781155015196,
+        "false_negative_rate": 0.7363221884498481
+      },
+      {
+        "group": "Hispanic",
+        "sample_count": 328,
+        "positive_count": 31,
+        "recall": 0.3225806451612903,
+        "false_negative_rate": 0.6774193548387097
+      },
+      {
+        "group": "Missing",
+        "sample_count": 348,
+        "positive_count": 21,
+        "recall": 0.09523809523809523,
+        "false_negative_rate": 0.9047619047619048
+      },
+      {
+        "group": "Other",
+        "sample_count": 212,
+        "positive_count": 20,
+        "recall": 0.45,
+        "false_negative_rate": 0.55
+      }
+    ],
+    "gender": [
+      {
+        "group": "Female",
+        "sample_count": 7990,
+        "positive_count": 962,
+        "recall": 0.2661122661122661,
+        "false_negative_rate": 0.7338877338877339
+      },
+      {
+        "group": "Male",
+        "sample_count": 6812,
+        "positive_count": 757,
+        "recall": 0.24966974900924702,
+        "false_negative_rate": 0.750330250990753
+      },
+      {
+        "group": "Unknown/Invalid",
+        "sample_count": 1,
+        "positive_count": 0,
+        "recall": null,
+        "false_negative_rate": null
+      }
+    ],
+    "age": [
+      {
+        "group": "[0-10)",
+        "sample_count": 21,
+        "positive_count": 1,
+        "recall": 0.0,
+        "false_negative_rate": 1.0
+      },
+      {
+        "group": "[10-20)",
+        "sample_count": 88,
+        "positive_count": 7,
+        "recall": 0.14285714285714285,
+        "false_negative_rate": 0.8571428571428572
+      },
+      {
+        "group": "[20-30)",
+        "sample_count": 201,
+        "positive_count": 21,
+        "recall": 0.14285714285714285,
+        "false_negative_rate": 0.8571428571428572
+      },
+      {
+        "group": "[30-40)",
+        "sample_count": 554,
+        "positive_count": 74,
+        "recall": 0.44594594594594594,
+        "false_negative_rate": 0.5540540540540541
+      },
+      {
+        "group": "[40-50)",
+        "sample_count": 1485,
+        "positive_count": 190,
+        "recall": 0.3631578947368421,
+        "false_negative_rate": 0.6368421052631579
+      },
+      {
+        "group": "[50-60)",
+        "sample_count": 2538,
+        "positive_count": 271,
+        "recall": 0.2177121771217712,
+        "false_negative_rate": 0.7822878228782288
+      },
+      {
+        "group": "[60-70)",
+        "sample_count": 3346,
+        "positive_count": 365,
+        "recall": 0.2547945205479452,
+        "false_negative_rate": 0.7452054794520548
+      },
+      {
+        "group": "[70-80)",
+        "sample_count": 3806,
+        "positive_count": 450,
+        "recall": 0.2511111111111111,
+        "false_negative_rate": 0.7488888888888889
+      },
+      {
+        "group": "[80-90)",
+        "sample_count": 2398,
+        "positive_count": 291,
+        "recall": 0.23367697594501718,
+        "false_negative_rate": 0.7663230240549828
+      },
+      {
+        "group": "[90-100)",
+        "sample_count": 366,
+        "positive_count": 49,
+        "recall": 0.12244897959183673,
+        "false_negative_rate": 0.8775510204081632
+      }
+    ]
+  },
+  "model": {
+    "version": "catboost-data-0689e7ec-config-3ef1d9ea-source-3762ff51",
+    "fingerprints": {
+      "data": "0689e7ec031237dc63031b938805c48377748761a3b26acab621567afa24df97",
+      "configuration": "3ef1d9ea953cc403809ed51c2a209c0fb280f98309e0d431def657b788a48748",
+      "source": "3762ff510efe76ae370d023e7ef7eac2a6705ad05f5e189f5e40ef45549abf11"
+    },
+    "feature_count": 47,
+    "forbidden_feature_overlap": []
+  },
+  "verification": {
+    "peak_memory_mb": 537.74,
+    "runtime_seconds": 485.315,
+    "random_seed": 42,
+    "runtime_versions": {
+      "python": "3.12.5",
+      "catboost": "1.2.10",
+      "joblib": "1.5.3",
+      "numpy": "2.4.4",
+      "pandas": "2.3.3",
+      "scikit_learn": "1.8.0"
+    },
+    "tests": {
+      "passed": 12,
+      "failed": 0
+    },
+    "notebook": {
+      "code_cells": 7,
+      "executed_code_cells": 7,
+      "charts": 6,
+      "error_outputs": 0,
+      "saved_output_privacy_scan": "passed"
+    },
+    "docker": {
+      "image_build": "passed",
+      "batch_command": "passed",
+      "persistent_log": "passed",
+      "host_container_same_order": true,
+      "host_container_same_selection": true,
+      "maximum_probability_difference": 0.0
+    },
+    "sample_output": {
+      "rows": 10,
+      "identifiers": "synthetic",
+      "ordered_descending": true
+    }
+  }
+}

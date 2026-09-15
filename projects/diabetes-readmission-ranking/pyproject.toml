@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "diabetes-readmission-ranking"
+version = "0.1.0"
+description = "Batch ranking of diabetes discharges for limited follow-up"
+requires-python = ">=3.11"
+dependencies = [
+    "catboost==1.2.10",
+    "joblib==1.5.3",
+    "numpy==2.4.4",
+    "pandas==2.3.3",
+    "psutil==7.2.2",
+    "scikit-learn==1.8.0",
+]
+
+[project.optional-dependencies]
+notebook = [
+    "ipykernel==6.31.0",
+    "jupyter==1.1.1",
+    "matplotlib==3.11.1",
+    "seaborn==0.13.2",
+]
+test = ["nbformat==5.11.1", "pytest==8.4.2"]
+
+[project.scripts]
+train-readmission-ranker = "diabetes_readmission_ranking.train:main"
+rank-discharges = "diabetes_readmission_ranking.inference:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
